@@ -1,5 +1,5 @@
 # Python-Programming
-CSC4992 Final Project Jeff, Shawn, Shaunak
+CSC4992 Final Project Jeff, Shaunak, Adam
 
 
 Include this Markdown file in the "Management" folder of your git repository and edit it accordingly.
