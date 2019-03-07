@@ -16,9 +16,9 @@ Include this Markdown file in the "Management" folder of your git repository and
 ### Modules
 
 * Login
-* Create
+* Ticket
 * Edit / Delete
-* Search
+* Passengers
 
 ### Tasks
 
@@ -27,17 +27,11 @@ Include this Markdown file in the "Management" folder of your git repository and
 * Development
 * Testing
 
-This is just an example, your tasks should be more detailed.
-
-
-
 ## Gantt Chart
 
 Assign concrete tasks to each team member and plan your time using a Gantt Chart.
 
-## Research state of the art projects
-
-Go online and search for open source projects written in Python that do what your team want to do.
+## Research 
 
 
 Complete this table one row for each project. You should list at least one project for each team member (i.e. you should research at four different projects if your team has four team members)
