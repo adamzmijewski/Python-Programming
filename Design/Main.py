@@ -6,7 +6,47 @@ Created on Mar 24, 2019
 import mysql.connector
 from mysql.connector.errors import Error
 
-    #connection
+#fh7020
+'''
+def viewTicket(code,mycursor):
+    
+    #view the ticket
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="password"
+  
+        )
+      
+mycursor = db.cursor()
+
+
+
+sql = ("select * from kiosk.tickets where kiosk.tickets.code = %s ")
+holder = code,
+
+mycursor.execute(sql,holder)
+    
+result = mycursor.fetchall()
+#print(result)
+
+for r in result:
+    
+    print ('Code: ',  r[0])
+    print('First Name: ',r[1])
+    print('Last Name: ',r[2])
+    print('Departure Time: ', r[3])
+    print('Arrival Time: ',r[4])
+    print('Start:  ',r[5])
+    print('Destination: ',r[6])
+    print('Seat: ',r[7])
+    print('Departure Date: ',r[8])
+    print('Arrival Date: ',r[9])
+    
+     
+        
+    '''    
+
 
 
 
@@ -53,17 +93,21 @@ smydb = mysql.connector.connect(
         )
 
 ticket_code = ''
-prompt =0
+#prompt =0
 #input
-while(prompt>1):
+
+prompt = input('Enter choice = ')
+
+
+while(prompt>'0' and prompt<'4'):
     
-    prompt = input('Enter choice = ')
+    #prompt = input('Enter choice = ')
 
 
-    if(prompt== 1):   
+    if(prompt == '1'):   
 
       #view the ticket
-        ticket_code =  input('Enter code: ')
+      ticket_code=input('Enter Code ')
     
 
 
@@ -71,37 +115,37 @@ while(prompt>1):
 
         
 
-        mycursor = smydb.cursor()
+    mycursor = smydb.cursor()
 
 
 
-        sql = ("select * from kiosk.tickets where kiosk.tickets.code = %s ")
-        holder = ticket_code,
+    sql = ("select * from kiosk.tickets where kiosk.tickets.code = %s ")
+    holder = ticket_code,
 
-        mycursor.execute(sql,holder)
+    mycursor.execute(sql,holder)
     
-        result = mycursor.fetchall()
-        print(result)
+    result = mycursor.fetchall()
+    print(result)
 
-        for r in result:
+    for r in result:
     
-                print ('Code: ',  r[0])
-                print('First Name: ',r[1])
-                print('Last Name: ',r[2])
-                print('Departure Time: ', r[3])
-                print('Arrival Time: ',r[4])
+        print ('Code: ',  r[0])
+        print('First Name: ',r[1])
+        print('Last Name: ',r[2])
+        print('Departure Time: ', r[3])
+        print('Arrival Time: ',r[4])
 
 
-                print('Start:  ',r[5])
-                print('Destination: ',r[6])
-                print('Seat: ',r[7])
+        print('Start:  ',r[5])
+        print('Destination: ',r[6])
+        print('Seat: ',r[7])
 
-                print('Departure Date: ',r[8])
-                print('Arrival Date: ',r[9])
+        print('Departure Date: ',r[8])
+        print('Arrival Date: ',r[9])
     
-    else:
+   # else:
     
-                print('Invalid Input. Please Try Again')  
+               # print('Invalid Input. Please Try Again')  
         
         
     
