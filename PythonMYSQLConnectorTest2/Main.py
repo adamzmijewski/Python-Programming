@@ -27,8 +27,9 @@ def Menu(cursor):
                 
             finally:
                 printMenu()
+                prompt = input('Enter choice = ')
                 
-        prompt = input('Enter choice = ')
+    print("System Exited.")
                 
 # Menu display
 def printMenu():
@@ -38,7 +39,10 @@ def printMenu():
     print('  3)Add route\n')
 
 # RANDOM TICKET NUMBER GENERATOR
-ticket_ID = str(random.randint(111111, 999999))
+def generateTicketID():
+    return str(random.randint(111111, 999999))
+
+ticket_ID = generateTicketID()
 print('Random Ticket ID generated: %s\n' % (ticket_ID))
 
 # CONNECTION BLOCK
