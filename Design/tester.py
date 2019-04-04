@@ -19,58 +19,67 @@ mydb = mysql.connector.connect(
         passwd="password"
   
         )
+# username:root | password:password
+
+print('Add a new Route')
+username = input("Enter your user name: ")
+password = input("Enter password: ")
 
 
+if(username=='root' and password=='password'):
 
-routeid = input("Enter the ID: ")
-routeNumber =input("Enter the route number: ")
-passengers = input("Enter the number of passengers: ")
-startpoint = input("Enter a starting point: ")
-endpoint = input("Enter a end point: ")
-time = input("Enter the starting time: ")
-duration = input("Enter the duration: ")
+    routeid = input("Enter the ID: ")
+    routeNumber =input("Enter the route number: ")
+    passengers = input("Enter the number of passengers: ")
+    startpoint = input("Enter a starting point: ")
+    endpoint = input("Enter a end point: ")
+    time = input("Enter the starting time: ")
+    duration = input("Enter the duration: ")
 
 #make the object
 
-userRoute = Route(routeid,routeNumber,passengers,startpoint,endpoint,time,duration)
+    userRoute = Route(routeid,routeNumber,passengers,startpoint,endpoint,time,duration)
 
 #insert statement
 
-try:
+    try:
      
     #connect
     
-    conn = mysql.connector.connect(
+        conn = mysql.connector.connect(
         host="localhost",
         user="root",
         passwd="password"
   
         )
     
-    print("Connection Successful")
+        print("Connection Successful")
     
-except ConnectionError:
-    print("Failed To Connect")
+    except ConnectionError:
+        print("Failed To Connect")
     
     # INSERTION BLOCK
-try:
-    cursor = conn.cursor()
+    try:
+        cursor = conn.cursor()
     #Menu(cursor)
    # mysqlInsert = ('INSERT INTO kiosk.route (id, route_number, passengers, starting_point, end_point, time, duration)VALUES(%s, %s, %s, %s, %s, %s, %s)', (userRoute.id,userRoute.routeNumber,userRoute.passengers,userRoute.startpoint,userRoute.endpoint,userRoute.time,userRoute.duration) 
     
-    sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+        sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
     
     #INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,end_point,time,duration) VALUES (1,'dfasfd','dfasfd','dfasfd','dfasfd','dfasfd','dfasfd')
-    varz = (userRoute.id,userRoute.routeNumber,userRoute.passengers,userRoute.startpoint,userRoute.endpoint,userRoute.time,userRoute.duration)
+        varz = (userRoute.id,userRoute.routeNumber,userRoute.passengers,userRoute.startpoint,userRoute.endpoint,userRoute.time,userRoute.duration)
     
     #print(varz)
     
-    result = cursor.execute(sql_insert_query,varz)
-    conn.commit()
-    print("Route inserted successfully.")
+        result = cursor.execute(sql_insert_query,varz)
+        conn.commit()
+        print("Route inserted successfully.")
     
-except Error:
-    print("Failed to insert route")
+    except Error:
+        print("Failed to insert route")
+else:
+    
+    print("Access Denied")
 
 
 '''
