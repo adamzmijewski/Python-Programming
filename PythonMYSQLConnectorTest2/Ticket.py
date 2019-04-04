@@ -1,17 +1,16 @@
-class Ticket(object):
+class Ticket:
 
-    @property
     def __init__(self):
         self.Starting_Point = ''
-        self.Destintion = ''
+        self.Destination = ''
         self.First_name = ''
         self.Last_name = ''
         self.Seat = ''
-        self.Departure_Time=  ''
-        self.Arrival_Time = ''
+        self.Departure_time = ''
+        self.Arrival_time = ''
         self.Departure_date = ''
         self.Arrival_date = ''
-        self.Ticket_ID = 0
+        self.Ticket_ID = ''
     
     # Set/Get for Starting_point
     def set_Starting_point(self, location):
