@@ -1,0 +1,8 @@
+        text_codes = ['9233','4234']  
+        
+        
+        file = open('tickets.txt','w')
+        
+        file.write("\n".join(text_codes))
+                
+        file.close()
