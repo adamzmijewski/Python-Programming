@@ -7,9 +7,7 @@ class Ticket:
         self.Last_name = ''
         self.Seat = ''
         self.Departure_time = ''
-        self.Arrival_time = ''
         self.Departure_date = ''
-        self.Arrival_date = ''
         self.Ticket_ID = ''
     
     # Set/Get for Starting_point
@@ -60,14 +58,6 @@ class Ticket:
         return self.Departure_time
         
         
-    # Set/Get for Arrival_time
-    def set_Arrival_time(self, time):
-        self.Arrival_Time = time
-        
-    def get_Arrival_time(self):
-        return self.Arrival_time
-        
-        
     # Set/Get for Departure_date
     def set_Departure_date(self, date):
         self.Departure_date = date
@@ -76,19 +66,10 @@ class Ticket:
         return self.Departure_date
         
         
-    # Set/Get for Arrival_date
-    def set_Arrival_date(self, date):
-        self.Arrival_date = date
-        
-    def get_Arrival_date(self):
-        return self.Arrival_date
-        
-        
     # Set/Get for Ticket_ID
     def set_Ticket_ID(self, ID):
         self.Ticket_ID = ID
         
     def get_Ticket_ID(self):
         return self.Ticket_ID
-        
-    
+

@@ -9,7 +9,7 @@ new_ticket = Ticket()
 def Menu(cursor, new_ticket):
     printMenu()
         
-    #input
+    # input
     prompt = input('Enter choice:')
     print()
         
@@ -17,15 +17,18 @@ def Menu(cursor, new_ticket):
         
         if(prompt == '1'):   
         
-            #view the ticket
+            # view the ticket
             try:
-                #cursor = conn.cursor()
-                ticket_code =  input(str('Input Ticket Number: '))
+                ticket_code = input(str('Input Ticket Number: '))
                 print()
-                cursor.execute('''SELECT * FROM Ticket where Ticket_ID = '''+ticket_code)
-                print('\nTICKET INFO:', end = ' ')
+                cursor.execute('''SELECT * FROM tickets where code = '''+ticket_code)
+                print('\n  TICKET INFO: Ticket #   First Name   Last Name   Leaving At     '
+                      'From          To          Seat      Trip Date')
                 for row in cursor:
-                    print(row)
+                    print('               ', end='')
+                    for i in range(0, 8):
+                        print(row[i], end='       ')
+                print()
                     
             except Error:
                 print('Failed to retrieve values')
@@ -35,39 +38,45 @@ def Menu(cursor, new_ticket):
                 prompt = input('Enter choice = ')
 
         elif prompt == '2':
-            new_ticket.set_Starting_point(input('Enter Starting Point:'))
-            new_ticket.set_Destination(input('Enter Destination:'))
+            valid_trip = validateTrip(new_ticket)
+
+            while valid_trip == False:
+                valid_trip = validateTrip(new_ticket)
+
             new_ticket.set_First_name(input('Enter Passenger First Name:'))
             new_ticket.set_Last_name(input('Enter Passenger Last Name:'))
             new_ticket.set_Seat(input('Choose Seat:'))
             new_ticket.set_Departure_time(input('Enter Departure Time:'))
-            new_ticket.set_Arrival_time(input('Enter Arrival Time:'))
             new_ticket.set_Departure_date(input('Enter Departure Date:'))
-            new_ticket.set_Arrival_date(input('Enter Arrival Date:'))
             new_ticket.set_Ticket_ID(str(generateTicketID()))
 
             try:
                 sql_insert_query = '''
     
-                                INSERT INTO Ticket (Starting_point, Destination, First_name, Last_name, Seat, 
-                                                    Departure_time, Arrival_time, Departure_date, Arrival_date, Ticket_ID)
+                                INSERT INTO tickets (code, first_name, last_name, depart_time, startpoint, 
+                                                    endpoint, seat_num, depart_date)
                                 VALUES
-                                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
+                                (%s,%s,%s,%s,%s,%s,%s,%s)'''
 
-                insert_tuple = (new_ticket.get_Starting_point(),
-                                new_ticket.get_Destination(),
+                insert_tuple = (new_ticket.get_Ticket_ID(),
                                 new_ticket.get_First_name(),
                                 new_ticket.get_Last_name(),
-                                new_ticket.get_Seat(),
                                 new_ticket.get_Departure_time(),
-                                new_ticket.get_Arrival_time(),
-                                new_ticket.get_Departure_date(),
-                                new_ticket.get_Arrival_date(),
-                                new_ticket.get_Ticket_ID())
+                                new_ticket.get_Starting_point(),
+                                new_ticket.get_Destination(),
+                                new_ticket.get_Seat(),
+                                new_ticket.get_Departure_date())
 
-                result = cursor.execute(sql_insert_query, insert_tuple)
+                cursor.execute(sql_insert_query, insert_tuple)
                 conn.commit()
-                print("Ticket created.  Ticket ID is %s\n" % (new_ticket.get_Ticket_ID()))
+
+                update_sql = 'update kiosk.route set kiosk.route.Id = kiosk.route.Id + 1 ' \
+                             'where kiosk.route.starting_point = %s and kiosk.route.end_point = %s'
+                update_holder = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
+                cursor.execute(update_sql, update_holder)
+                conn.commit()
+                
+                print("\nTicket created.  Ticket ID is %s\n" % (new_ticket.get_Ticket_ID()))
 
             except Error:
                 print('Ticket Not Inserted')
@@ -78,8 +87,7 @@ def Menu(cursor, new_ticket):
         
         elif prompt == '3':
             pass
-                
-                       
+
     print("System Exited.\n")
                 
 # Menu display
@@ -89,12 +97,57 @@ def printMenu():
     print('  2)Reserve Ticket')
     print('  3)Add route\n')
 
+
 # RANDOM TICKET NUMBER GENERATOR
 def generateTicketID():
     return str(random.randint(111111, 999999))
 
-#ticket_ID = generateTicketID()
-#print('Random Ticket ID generated: %s\n' % (ticket_ID))
+
+def validateTrip(new_ticket):
+    try:
+        new_ticket.set_Starting_point(input('Enter Starting Point:').lower())
+        new_ticket.set_Destination(input('Enter Destination:').lower())
+
+        sql = (
+            "select kiosk.route.starting_point,kiosk.route.end_point,kiosk.route.passengers, kiosk.route.Id from kiosk.route "
+            "where kiosk.route.starting_point = %s and kiosk.route.end_point = %s")
+
+        holder2 = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
+
+        cursor.execute(sql, holder2)
+
+        result = cursor.fetchone()
+
+        maxSeats = int(result[2])
+
+        if result[0] == new_ticket.get_Starting_point() and result[1] == new_ticket.get_Destination():
+            if result[3] >= maxSeats:
+                print('Sorry no tickets left. Please try another selection.')
+                return False
+            print('A route has been found matching the criteria.')
+            print("%d seats left.  Enter info to book." % (maxSeats - result[3]))
+            return True
+
+        else:
+            update_cursor = conn.cursor()
+
+            # SET SQL_SAFE_UPDATES=0;
+
+            update_sql = 'update kiosk.route set kiosk.route.Id = kiosk.route.Id + 1 ' \
+                         'where kiosk.route.starting_point = %s and kiosk.route.end_point = %s'
+
+            update_holder = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
+
+            update_cursor.execute(update_sql, update_holder)
+
+            conn.commit()
+
+            return True
+
+    except TypeError:
+        print('Invalid selection')
+        return False
+
 
 # CONNECTION BLOCK
 try:
@@ -102,8 +155,8 @@ try:
         user='root', 
         password='Canada1867!', 
         host='127.0.0.1',
-        database='transitsystem', 
-        auth_plugin = 'mysql_native_password')
+        database='kiosk',
+        auth_plugin='mysql_native_password')
     
     print("Connection Successful")
     
