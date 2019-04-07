@@ -1,0 +1,37 @@
+try:
+     
+    #connect
+    
+        conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="password"
+  
+        )
+    
+       # print("Connection Successful")
+    
+except ConnectionError:
+        print("Failed To Connect")
+
+print('Book a ticket now')
+
+start_point=input('Starting point: ')
+end_point=input('End point: ')
+
+mycursor = conn.cursor()
+
+sql = ("select kiosk.route.starting_point,kiosk.route.end_point,kiosk.route.passengers from kiosk.route where kiosk.route.starting_point = %s and kiosk.route.end_point = %s")
+holder2 = (start_point,end_point)
+
+mycursor.execute(sql,holder2)
+    
+result = mycursor.fetchone()
+print(result)
+
+if(result[0]==start_point and result[1]==end_point):
+    
+    print('A route has been found matching the criteria. Enter the information below to book a ticket now.')
+    
+    
+    #put your insert ticket code here
