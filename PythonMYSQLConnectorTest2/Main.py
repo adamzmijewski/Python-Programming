@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector.errors import Error
 import random
 from Ticket import Ticket
+from Route import Route
 
 new_ticket = Ticket()
 
@@ -70,12 +71,14 @@ def Menu(cursor, new_ticket):
                 cursor.execute(sql_insert_query, insert_tuple)
                 conn.commit()
 
+                writeToFile(insert_tuple)
+
                 update_sql = 'update kiosk.route set kiosk.route.Id = kiosk.route.Id + 1 ' \
                              'where kiosk.route.starting_point = %s and kiosk.route.end_point = %s'
                 update_holder = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
                 cursor.execute(update_sql, update_holder)
                 conn.commit()
-                
+
                 print("\nTicket created.  Ticket ID is %s\n" % (new_ticket.get_Ticket_ID()))
 
             except Error:
@@ -86,7 +89,46 @@ def Menu(cursor, new_ticket):
                 prompt = input('Enter choice = ')
         
         elif prompt == '3':
-            pass
+            # username:root | password:password
+            print('Add a new Route')
+            username = input("Enter your user name: ")
+            password = input("Enter password: ")
+
+            if (username == 'root' and password == 'password'):
+                routeid = 0
+                routeNumber = input("Enter the route number: ")
+                passengers = input("Enter the number of passengers: ")
+                startpoint = input("Enter a starting point: ")
+                endpoint = input("Enter a end point: ")
+                time = input("Enter the starting time: ")
+                duration = input("Enter the duration: ")
+
+                # make the object
+                userRoute = Route(routeid, routeNumber, passengers, startpoint, endpoint, time, duration)
+
+                # insert statement
+                try:
+                    sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+
+                    varz = (
+                    userRoute.id, userRoute.routeNumber, userRoute.passengers, userRoute.startpoint, userRoute.endpoint,
+                    userRoute.time, userRoute.duration)
+
+                    cursor.execute(sql_insert_query, varz)
+                    conn.commit()
+                    print("Route inserted successfully.")
+
+                except Error:
+                    print("Failed to insert route")
+
+                finally:
+                    printMenu()
+                    prompt = input('Enter choice = ')
+
+            else:
+                print("Access Denied\n")
+                printMenu()
+                prompt = input('Enter choice = ')
 
     print("System Exited.\n")
                 
@@ -109,15 +151,12 @@ def validateTrip(new_ticket):
         new_ticket.set_Destination(input('Enter Destination:').lower())
 
         sql = (
-            "select kiosk.route.starting_point,kiosk.route.end_point,kiosk.route.passengers, kiosk.route.Id from kiosk.route "
-            "where kiosk.route.starting_point = %s and kiosk.route.end_point = %s")
+            "select kiosk.route.starting_point, kiosk.route.end_point, kiosk.route.passengers, kiosk.route.Id, "
+            "kiosk.route.time from kiosk.route where kiosk.route.starting_point = %s and kiosk.route.end_point = %s")
 
         holder2 = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
-
         cursor.execute(sql, holder2)
-
         result = cursor.fetchone()
-
         maxSeats = int(result[2])
 
         if result[0] == new_ticket.get_Starting_point() and result[1] == new_ticket.get_Destination():
@@ -148,6 +187,11 @@ def validateTrip(new_ticket):
         print('Invalid selection')
         return False
 
+def writeToFile(tuple):
+    file = open('tickets.txt', 'a')
+    file.write(" ".join(tuple))
+    file.write('\n')
+    file.close()
 
 # CONNECTION BLOCK
 try:
