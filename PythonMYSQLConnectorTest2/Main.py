@@ -22,6 +22,8 @@ def Menu(cursor, new_ticket):
             try:
                 ticket_code = input(str('Input Ticket Number: '))
                 print()
+
+                # Print Ticket Info
                 cursor.execute('''SELECT * FROM tickets where code = '''+ticket_code)
                 print('\n  TICKET INFO: Ticket #   First Name   Last Name   Leaving At     '
                       'From          To          Seat      Trip Date')
@@ -71,6 +73,7 @@ def Menu(cursor, new_ticket):
                 cursor.execute(sql_insert_query, insert_tuple)
                 conn.commit()
 
+                # Write New Ticket To .txt File
                 writeToFile(insert_tuple)
 
                 update_sql = 'update kiosk.route set kiosk.route.Id = kiosk.route.Id + 1 ' \
@@ -89,7 +92,7 @@ def Menu(cursor, new_ticket):
                 prompt = input('Enter choice = ')
         
         elif prompt == '3':
-            # username:root | password:password
+            # username = 'root' | password = 'password'
             print('Add a new Route')
             username = input("Enter your user name: ")
             password = input("Enter password: ")
@@ -108,7 +111,8 @@ def Menu(cursor, new_ticket):
 
                 # insert statement
                 try:
-                    sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
+                    sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,
+                                          end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
 
                     varz = (
                     userRoute.id, userRoute.routeNumber, userRoute.passengers, userRoute.startpoint, userRoute.endpoint,
@@ -142,7 +146,14 @@ def printMenu():
 
 # RANDOM TICKET NUMBER GENERATOR
 def generateTicketID():
-    return str(random.randint(111111, 999999))
+    return str(factorialTicketID(10) + random.randint(111111, 999999))
+
+def factorialTicketID(num):
+    if num == 1:
+        return 1
+    else:
+        return (num*factorialTicketID(num-1))
+    
 
 
 def validateTrip(new_ticket):

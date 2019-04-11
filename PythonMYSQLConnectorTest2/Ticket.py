@@ -1,10 +1,12 @@
-class Ticket:
+from Passenger import Passenger
+
+class Ticket(Passenger):
 
     def __init__(self):
         self.Starting_Point = ''
         self.Destination = ''
-        self.First_name = ''
-        self.Last_name = ''
+        #self.First_name = ''
+        #self.Last_name = ''
         self.Seat = ''
         self.Departure_time = ''
         self.Departure_date = ''
@@ -28,7 +30,7 @@ class Ticket:
       
     # Set/Get for First_name
     def set_First_name(self, name):
-        self.First_name = name
+        Passenger.First_name = name
         
     def get_First_name(self):
         return self.First_name
@@ -36,7 +38,7 @@ class Ticket:
     
     # Set/Get for Last_name
     def set_Last_name(self, name):
-        self.Last_name = name
+        Passenger.Last_name = name
         
     def get_Last_name(self):
         return self.Last_name
