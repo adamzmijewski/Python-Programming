@@ -1,0 +1,4 @@
+"Full Monty Transit" Users Manual
+	Use of the "Full Monty Transit" menu is straight-forward and easy to use.  Simply choose one of the three options - book a ticket for a trip; search for ticket details; or update a route in the database.  For the third option, administrator login is necessary.  
+	To book a ticket, type '2' and simply enter the information you are prompted for.  To search details of a ticket, type '1' and simply enter the ticket ID number.  To add  a route to the database, type '3', login as an administrator, and add the new route information for which you are prompted.
+You will return to the options menu whenever you are finished completing your current task.  You may exit the system anytime by entering 0.
