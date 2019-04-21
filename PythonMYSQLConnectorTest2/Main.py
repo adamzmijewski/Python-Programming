@@ -1,12 +1,21 @@
 import mysql.connector
 from mysql.connector.errors import Error
 import random
-from Ticket import Ticket
-from Route import Route
+from Ticket import Ticket  #TICKET CLASS CREATED FOR PROJECT
+from Route import Route    #ROUTE CLASS CREATED FOR PROJECT
 
+#GLOBAL VARIABLE - NEW TICKET TO BE INSERTED
 new_ticket = Ticket()
 
-# Menu function
+#AUTHORS: Jeff Hall, Adam Zmijewski
+#PURPOSE: Manages Menu Option Operations:
+#         1) Searches Database For Ticket Info;
+#         2) Books New Ticket Into Database
+#         3) Adds Route TO Db, If Logged In As Administrator
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: MySQL Cursor object, Ticket Object
+#OUTPUT: None 
 def Menu(cursor, new_ticket):
     printMenu()
         
@@ -39,20 +48,22 @@ def Menu(cursor, new_ticket):
             finally:
                 printMenu()
                 prompt = input('Enter choice = ')
-
+        #Book A New Trip
         elif prompt == '2':
             valid_trip = validateTrip(new_ticket)
 
             while valid_trip == False:
                 valid_trip = validateTrip(new_ticket)
-
+            
+            #Save Input As New Ticket Object
             new_ticket.set_First_name(input('Enter Passenger First Name:'))
             new_ticket.set_Last_name(input('Enter Passenger Last Name:'))
             new_ticket.set_Seat(input('Choose Seat:'))
             new_ticket.set_Departure_time(input('Enter Departure Time:'))
             new_ticket.set_Departure_date(input('Enter Departure Date:'))
             new_ticket.set_Ticket_ID(str(generateTicketID()))
-
+            
+            #Insert New Ticket Into Database
             try:
                 sql_insert_query = '''
     
@@ -91,8 +102,9 @@ def Menu(cursor, new_ticket):
                 printMenu()
                 prompt = input('Enter choice = ')
         
+        #Add New Route To Database
         elif prompt == '3':
-            # username = 'root' | password = 'password'
+            #username = 'root' | password = 'password'
             print('Add a new Route')
             username = input("Enter your user name: ")
             password = input("Enter password: ")
@@ -106,10 +118,10 @@ def Menu(cursor, new_ticket):
                 time = input("Enter the starting time: ")
                 duration = input("Enter the duration: ")
 
-                # make the object
+                #Save Input As Route Object
                 userRoute = Route(routeid, routeNumber, passengers, startpoint, endpoint, time, duration)
 
-                # insert statement
+                #Insert New Route To Database
                 try:
                     sql_insert_query = """INSERT INTO  kiosk.route (id, route_number, passengers, starting_point,
                                           end_point,time,duration) VALUES (%s,%s,%s,%s,%s,%s,%s)"""
@@ -136,7 +148,12 @@ def Menu(cursor, new_ticket):
 
     print("System Exited.\n")
                 
-# Menu display
+#AUTHORS: Jeff Hall, Adam Zmijewski
+#PURPOSE: Prints Menu Options 
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: None
+#OUTPUT: None 
 def printMenu():
     print('\nFull Monty Transit')
     print('  1)View Ticket information')
@@ -144,32 +161,52 @@ def printMenu():
     print('  3)Add route\n')
 
 
-# RANDOM TICKET NUMBER GENERATOR
+#AUTHORS: Jeff Hall, Adam Zmijewski
+#PURPOSE: Recursive Random Integer Function - Added To Ticket ID Number
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: None
+#OUTPUT: Random 6-Digit Integer
 def generateTicketID():
-    return str(factorialTicketID(10) + random.randint(111111, 999999))
+    temp = random.randint(1, 5)
+    return str(factorialTicketID(temp) + random.randint(111111, 999999))
 
+#AUTHORS: Adam Zmijewski
+#PURPOSE: Generates Random 6-Digit Ticket ID Number, Between 111111 And 999999
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: None
+#OUTPUT: Random 6-Diget Integer
 def factorialTicketID(num):
     if num == 1:
         return 1
     else:
         return (num*factorialTicketID(num-1))
     
-
-
+#AUTHORS: Jeff Hall, Adam Zmijewski
+#PURPOSE: Validates Starting Point And Destination of Proposed Trip - And If Seats Available
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: Ticket Object From Imported Ticket Class
+#OUTPUT: BOOLEAN - Returns True if Locations Valid And Tickets Available,
+#                  Returns False If Any Of The Above Are Invalid
 def validateTrip(new_ticket):
     try:
+        #Sets Input TO Lower case, To Match Database LocationEntries
         new_ticket.set_Starting_point(input('Enter Starting Point:').lower())
         new_ticket.set_Destination(input('Enter Destination:').lower())
-
+        
+        #Selects Starting Points, Destinations, And Tickets Available From DB
         sql = (
             "select kiosk.route.starting_point, kiosk.route.end_point, kiosk.route.passengers, kiosk.route.Id, "
             "kiosk.route.time from kiosk.route where kiosk.route.starting_point = %s and kiosk.route.end_point = %s")
-
+        
         holder2 = (new_ticket.get_Starting_point(), new_ticket.get_Destination())
         cursor.execute(sql, holder2)
         result = cursor.fetchone()
         maxSeats = int(result[2])
-
+        
+        #Invalidates Trip If Train Is Full, Or Locations Do Not Exist 
         if result[0] == new_ticket.get_Starting_point() and result[1] == new_ticket.get_Destination():
             if result[3] >= maxSeats:
                 print('Sorry no tickets left. Please try another selection.')
@@ -180,8 +217,6 @@ def validateTrip(new_ticket):
 
         else:
             update_cursor = conn.cursor()
-
-            # SET SQL_SAFE_UPDATES=0;
 
             update_sql = 'update kiosk.route set kiosk.route.Id = kiosk.route.Id + 1 ' \
                          'where kiosk.route.starting_point = %s and kiosk.route.end_point = %s'
@@ -198,30 +233,36 @@ def validateTrip(new_ticket):
         print('Invalid selection')
         return False
 
+#AUTHORS: Jeff Hall, Adam Zmijewski
+#PURPOSE: Writes New Ticket Info To .txt File
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
+#INPUT: Tuple Consisting Of All Individual New Ticket Info
+#OUTPUT: None 
 def writeToFile(tuple):
     file = open('tickets.txt', 'a')
     file.write(" ".join(tuple))
     file.write('\n')
     file.close()
 
-# CONNECTION BLOCK
+#DB CONNECTION BLOCK
 try:
     conn = mysql.connector.connect(
-        user='root', 
-        password='Canada1867!', 
-        host='127.0.0.1',
-        database='kiosk',
-        auth_plugin='mysql_native_password')
+    user='root', 
+    password='Canada1867!', 
+    host='127.0.0.1',
+    database='kiosk',
+    auth_plugin='mysql_native_password')
     
     print("Connection Successful")
     
 except ConnectionError:
     print("Failed To Connect")
     
-    # INSERTION BLOCK
+    #INSERTION BLOCK
 try:
-    cursor = conn.cursor()
-    Menu(cursor, new_ticket)
+    cursor = conn.cursor()    #Creates New SQL Cursor Object
+    Menu(cursor, new_ticket)  #Call To Menu Function - Passes Cursor and Global Ticket Objects
     
 except Error:
     print("Failed to insert ticket")

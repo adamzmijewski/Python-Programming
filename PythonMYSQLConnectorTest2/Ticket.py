@@ -1,12 +1,16 @@
+#AUTHORS: Jeff Hall
+#PURPOSE: Ticket Class For All Information 
+#          On Newly Created Ticket
+#CREATION DATE: March 30, 2019
+#LAST MODIFICATION DATE: April 14, 2019
 from Passenger import Passenger
 
-class Ticket(Passenger):
+class Ticket(Passenger):  #Inherits from Passenger Class
 
+#Constructor
     def __init__(self):
         self.Starting_Point = ''
         self.Destination = ''
-        #self.First_name = ''
-        #self.Last_name = ''
         self.Seat = ''
         self.Departure_time = ''
         self.Departure_date = ''
@@ -30,6 +34,7 @@ class Ticket(Passenger):
       
     # Set/Get for First_name
     def set_First_name(self, name):
+        #Calls Constructor For Base Class
         Passenger.First_name = name
         
     def get_First_name(self):
@@ -38,6 +43,7 @@ class Ticket(Passenger):
     
     # Set/Get for Last_name
     def set_Last_name(self, name):
+        #Calls Constructor For Base Class
         Passenger.Last_name = name
         
     def get_Last_name(self):
