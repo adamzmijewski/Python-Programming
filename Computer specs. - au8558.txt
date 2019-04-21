@@ -1,0 +1,10 @@
+Computer Specifications
+au8558
+CSC 4992
+Final Project
+
+O/S - Windows 10
+System Type - 64-bit Operating System, x64-based Processor
+Processor - Intell Core i3-4005U CPU @ 1.70HGz 
+Installed RAM - 4.00 GB
+MAC Address - 4C-BB-58-E4-35-C2
